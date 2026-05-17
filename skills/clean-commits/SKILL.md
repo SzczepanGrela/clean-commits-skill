@@ -11,7 +11,7 @@ Follow the 4-phase workflow below. Apply the Safety rules in every phase and in 
 
 ## Safety rules (apply ALWAYS)
 
-**Branch awareness.** At the start of every session, run `git branch --show-current` and state which branch you are on. If the branch is `main`, `master`, `develop`, or matches `release/*`, stop before Phase 2 and ask the user: *"You're on `<branch>`. Confirm we commit here, or create a feature branch first?"* Wait for an explicit answer.
+**Branch awareness.** At the start of every session, run `git branch --show-current` and state which branch you are on. If the branch is `main`, `master`, `develop`, or matches `release/*` (any "protected" branch), you MUST stop and ask the user: *"You're on `<branch>`. Confirm we commit here, or create a feature branch first?"* This question MUST be sent as its own message — do NOT bundle the Phase 2 plan into the same message. Wait for explicit confirmation (`yes`, `ok`, `commit here`) BEFORE any Phase 2 work. Anything else (or silence) means: stop, do not proceed, help the user create a feature branch if asked.
 
 **Forbidden git operations — refuse even if the user asks:**
 
@@ -61,6 +61,8 @@ Before proposing anything, gather context:
 **Submodules / Git LFS.** Detect with `git submodule status` and `git lfs ls-files`. If present, inform the user but do not attempt to handle their state — out of scope. Continue with the regular files.
 
 ### Phase 2 — Propose the plan
+
+**Precondition**: if the current branch is protected (see Safety rules — Branch awareness), you must have received explicit user confirmation in a prior message. Do NOT include the plan in the same message as the branch question.
 
 Present a numbered plan as a code block:
 
