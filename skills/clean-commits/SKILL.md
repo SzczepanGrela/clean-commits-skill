@@ -56,9 +56,22 @@ Before proposing anything, gather context:
 - Looks like an artefact / cache / IDE / OS file (matches: `.env*`, `dist/`, `build/`, `__pycache__/`, `node_modules/`, `.DS_Store`, `Thumbs.db`, `*.pyc`, `*.log`, `.idea/`, `.vscode/`) → ask: *"These files look like things that shouldn't be committed. Add them to `.gitignore`?"*
 - Looks like new source code or data → ask: *"These are new files — include them in the split?"*
 
+**Documentation files — opt-in.** Documentation must never be added to a commit without explicit user confirmation, even when it appears alongside related code changes. This applies to BOTH new (untracked) and modified documentation files. Documentation patterns include:
+
+- `README*`, `CHANGELOG*`, `CONTRIBUTING*`, `CODE_OF_CONDUCT*`, `AUTHORS*`, `NOTICE*`, `MAINTAINERS*`
+- Anything under `docs/`, `doc/`, `documentation/`, or any `**/docs/**` path
+- `*.md`, `*.mdx`, `*.rst`, `*.adoc`, `*.txt` when the content is prose (not data fixtures)
+- Design notes, specs, plans, ADRs (e.g. `**/specs/**`, `**/plans/**`, `**/adr/**`)
+
+When such files appear in the change set, ask BEFORE building or presenting any commit plan: *"I see documentation changes: `<list>`. Include them in the commits, leave them uncommitted, or split into a separate `docs:` commit?"* Default to leaving them out until the user answers. If the user approves inclusion, prefer a dedicated `docs(<scope>): ...` commit unless they explicitly ask to fold the docs into a code commit. `LICENSE` and `.gitignore` are NOT documentation — treat them as regular tracked files.
+
 **Secret detection.** Flag any file matching: `.env*`, `*.key`, `*credentials*`, `*.pem`, any file larger than 5 MB. Flag *before* placing it in the plan: *"I detected `<file>` — this looks like secrets. Skip / include anyway / add to `.gitignore`?"* Default to skip.
 
 **Submodules / Git LFS.** Detect with `git submodule status` and `git lfs ls-files`. If present, inform the user but do not attempt to handle their state — out of scope. Continue with the regular files.
+
+**Language confirmation.** Default language for all written artefacts (commit subjects, commit bodies, any documentation you may add) is **English**, regardless of the chat language. If the conversation so far is in a language other than English, you MUST ask BEFORE presenting the Phase 2 plan, in the user's chat language, which language to use per artefact. Send this as its own message — do NOT bundle it with the plan.
+
+Ask separately for each artefact category that applies in this change set: commit subjects, commit bodies, and (only if the user has approved including them in this session) documentation files. Acceptable answer: a clear per-artefact choice (e.g. commits in English, docs in the user's language). If the user gives a single language without scope, confirm scope explicitly before continuing. If the user does not answer, fall back to the English default and state so before continuing. Record the chosen per-artefact languages and apply them consistently for the rest of the session.
 
 ### Phase 2 — Propose the plan
 
