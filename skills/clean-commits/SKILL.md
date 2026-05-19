@@ -118,9 +118,7 @@ When such files appear in the change set, ask BEFORE building or presenting any 
 
 **Submodules / Git LFS.** Detect with `git submodule status` and `git lfs ls-files`. If present, inform the user but do not attempt to handle their state — out of scope. Continue with the regular files.
 
-**Language confirmation.** Default language for all written artefacts (commit subjects, commit bodies, any documentation you may add) is **English**, regardless of the chat language. If the conversation so far is in a language other than English, you MUST ask BEFORE presenting the Phase 2 plan, in the user's chat language, which language to use per artefact. Send this as its own message — do NOT bundle it with the plan.
-
-Ask separately for each artefact category that applies in this change set: commit subjects, commit bodies, and (only if the user has approved including them in this session) documentation files. Acceptable answer: a clear per-artefact choice (e.g. commits in English, docs in the user's language). If the user gives a single language without scope, confirm scope explicitly before continuing. If the user does not answer, fall back to the English default and state so before continuing. Record the chosen per-artefact languages and apply them consistently for the rest of the session.
+**Language confirmation (ask at most once per session).** Default language for all written artefacts (commit subjects, bodies, any documentation) is **English**, regardless of chat language. If the chat is in a language other than English AND no language choice has been recorded yet in this session, ask once — as its own message before Phase 2, in the user's chat language — which language to use for each applicable artefact category (commit subjects, commit bodies, and docs if approved for inclusion). Record the answer and reuse it for every subsequent commit cycle in the same session; do not ask again. If the user does not answer, fall back to English and state so before continuing.
 
 ### Phase 2 — Propose the plan
 
