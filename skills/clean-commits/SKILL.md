@@ -34,6 +34,55 @@ You never modify files in the working tree. The skill only stages, commits, and 
 
 ## Workflow
 
+```dot
+digraph clean_commits_flow {
+    "Start" [shape=doublecircle];
+    "Phase 1: Discovery" [shape=box];
+    "Stop condition?\n(no changes / merge in progress / conflicts)" [shape=diamond];
+    "Stop and report" [shape=doublecircle];
+    "Protected branch?" [shape=diamond];
+    "Ask: confirm branch?\n(own message)" [shape=box];
+    "Confirmed?" [shape=diamond];
+    "Docs / secrets / non-English chat?" [shape=diamond];
+    "Ask the relevant question(s)\n(language: at most once per session)" [shape=box];
+    "Phase 2: Propose plan" [shape=box];
+    "Phase 3: Iterate" [shape=box];
+    "User approved?" [shape=diamond];
+    "Phase 4: Execute\n(reset, add, verify diff, commit)" [shape=box];
+    "Drift or hook failure?" [shape=diamond];
+    "Re-propose / show output, ask" [shape=box];
+    "Done locally — ask: push?\n(own message)" [shape=box];
+    "Push confirmed?" [shape=diamond];
+    "git push (plain)" [shape=box];
+    "End" [shape=doublecircle];
+
+    "Start" -> "Phase 1: Discovery";
+    "Phase 1: Discovery" -> "Stop condition?\n(no changes / merge in progress / conflicts)";
+    "Stop condition?\n(no changes / merge in progress / conflicts)" -> "Stop and report" [label="yes"];
+    "Stop condition?\n(no changes / merge in progress / conflicts)" -> "Protected branch?" [label="no"];
+    "Protected branch?" -> "Ask: confirm branch?\n(own message)" [label="yes"];
+    "Protected branch?" -> "Docs / secrets / non-English chat?" [label="no"];
+    "Ask: confirm branch?\n(own message)" -> "Confirmed?";
+    "Confirmed?" -> "Docs / secrets / non-English chat?" [label="yes"];
+    "Confirmed?" -> "Stop and report" [label="no"];
+    "Docs / secrets / non-English chat?" -> "Ask the relevant question(s)\n(language: at most once per session)" [label="yes"];
+    "Docs / secrets / non-English chat?" -> "Phase 2: Propose plan" [label="no"];
+    "Ask the relevant question(s)\n(language: at most once per session)" -> "Phase 2: Propose plan";
+    "Phase 2: Propose plan" -> "Phase 3: Iterate";
+    "Phase 3: Iterate" -> "User approved?";
+    "User approved?" -> "Phase 3: Iterate" [label="no, revise"];
+    "User approved?" -> "Phase 4: Execute\n(reset, add, verify diff, commit)" [label="yes"];
+    "Phase 4: Execute\n(reset, add, verify diff, commit)" -> "Drift or hook failure?";
+    "Drift or hook failure?" -> "Re-propose / show output, ask" [label="yes"];
+    "Re-propose / show output, ask" -> "Phase 2: Propose plan";
+    "Drift or hook failure?" -> "Done locally — ask: push?\n(own message)" [label="no"];
+    "Done locally — ask: push?\n(own message)" -> "Push confirmed?";
+    "Push confirmed?" -> "git push (plain)" [label="yes"];
+    "Push confirmed?" -> "End" [label="no"];
+    "git push (plain)" -> "End";
+}
+```
+
 ### Phase 1 — Discovery
 
 Before proposing anything, gather context:
