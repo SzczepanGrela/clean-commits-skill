@@ -1,6 +1,6 @@
 ---
 name: clean-commits
-description: Use when the user wants to commit uncommitted changes — analyses the working tree, proposes a split into atomic commits with Conventional Commits messages, lets the user iterate on the plan, then executes the series safely. Never uses destructive flags. Never pushes without an explicit, separate confirmation.
+description: Use whenever the user wants to commit, save, or check in their uncommitted work — even if they do not explicitly name "clean-commits". Triggers include phrases like "commit these changes", "commit my work", "let's commit", "save my changes", "split this into commits", "clean up before push", "zacommituj to" / "zrób commit" (Polish), or any request that turns a dirty working tree into one or more commits. Analyses the working tree, proposes a split into atomic commits with Conventional Commits messages, lets the user iterate on the plan, then executes the series safely. Never uses destructive flags. Never pushes without an explicit, separate confirmation.
 ---
 
 # Clean Commits
