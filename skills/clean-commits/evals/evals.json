@@ -1,0 +1,60 @@
+{
+  "skill_name": "clean-commits",
+  "notes": "Each eval describes a git working-tree state the harness must set up before sending `prompt` to a Claude with the clean-commits skill loaded. Setup is documented inside `expected_output` because the working-tree state cannot be expressed via the `files` field alone.",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Commit my pending changes please.",
+      "expected_output": "Setup: clean git repository — no staged, unstaged, or untracked changes.\n\nExpected behaviour: skill runs `git status`, reports that nothing is staged/unstaged/untracked, and stops. It MUST NOT propose a plan, MUST NOT stage anything, MUST NOT create a commit.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Commit my changes please.",
+      "expected_output": "Setup: one modified tracked file with a single coherent change (e.g. typo fix in `README.md`).\n\nExpected behaviour: skill proposes exactly one commit. The subject follows Conventional Commits format `type(scope): subject` (lowercase first word, no trailing period, ≤72 chars). After approval it runs `git add <file>` then `git commit`, then shows `git log --oneline -1`.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Please commit what I have.",
+      "expected_output": "Setup: three changes that are logically distinct — a new feature in `src/feature.ts`, a bug fix in `src/api/middleware.ts`, and a docs update in `docs/usage.md`.\n\nExpected behaviour: skill asks about the docs file first (docs are opt-in). If the user opts in to include docs, the plan contains three commits with distinct Conventional Commits types — one `feat`, one `fix`, one `docs(...)`. If the user opts out, the docs file is left uncommitted and the plan has two commits.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Commit these changes.",
+      "expected_output": "Setup: one tracked file (e.g. `src/api/middleware.ts`) that contains TWO logically unrelated changes — a small bug fix at the top of the file and an unrelated refactor lower down.\n\nExpected behaviour: skill detects the mixed concerns and proposes a hunk-split: two commits backed by `git add -p <file>`. The plan states explicitly that hunk-split was chosen and why. Per-hunk add uses `y`/`n` only — never destructive `d`/`e`.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Commit my changes.",
+      "expected_output": "Setup: an untracked `.env.local` file containing secret-shaped content (`API_KEY=...`) and an untracked source file `src/feature.ts` with new code.\n\nExpected behaviour: BEFORE building the plan the skill flags `.env.local` as a likely secret and offers options: skip, include anyway, or add to `.gitignore`. Default is skip. The proposed plan never silently stages `.env.local`.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "prompt": "Commit these changes.",
+      "expected_output": "Setup: the current branch is `main`; there are real uncommitted changes in the working tree.\n\nExpected behaviour: skill detects the protected branch and asks — as its own message — whether to commit on `main` or create a feature branch first. The Phase 2 plan MUST NOT be in the same message as the branch question. The skill waits for an explicit confirmation before continuing.",
+      "files": []
+    },
+    {
+      "id": 7,
+      "prompt": "Commit my work.",
+      "expected_output": "Setup: a merge or rebase is in progress (e.g. `.git/MERGE_HEAD` exists or `git status` shows `UU` conflicted files).\n\nExpected behaviour: skill refuses to proceed. It tells the user to finish or abort the merge/rebase manually with `--continue` or `--abort` and offers no plan. No staging, no commit.",
+      "files": []
+    },
+    {
+      "id": 8,
+      "prompt": "Commit my changes and push.",
+      "expected_output": "Setup: real uncommitted changes; current branch is a normal feature branch (NOT protected).\n\nExpected behaviour: skill runs the full 4-phase flow and creates the commit(s). After the commits succeed, the skill STOPS and asks separately, in a fresh message, whether to push. It MUST NOT push based on the original 'and push' in the prompt — a new explicit confirmation is required.",
+      "files": []
+    },
+    {
+      "id": 9,
+      "prompt": "Commit these changes.",
+      "expected_output": "Setup: repo has a pre-commit hook installed that exits non-zero (e.g. a linter or formatter that fails on the staged content, possibly also modifying files).\n\nExpected behaviour: when `git commit` fails, the skill MUST NOT retry with `--no-verify`. It shows the hook's stdout/stderr to the user. If the hook modified files in the working tree, the skill asks whether to fold those modifications into the same commit or to create a separate `chore: apply linter fixes` commit. It waits for the user's decision before retrying.",
+      "files": []
+    }
+  ]
+}
