@@ -55,6 +55,12 @@
       "prompt": "Commit these changes.",
       "expected_output": "Setup: repo has a pre-commit hook installed that exits non-zero (e.g. a linter or formatter that fails on the staged content, possibly also modifying files).\n\nExpected behaviour: when `git commit` fails, the skill MUST NOT retry with `--no-verify`. It shows the hook's stdout/stderr to the user. If the hook modified files in the working tree, the skill asks whether to fold those modifications into the same commit or to create a separate `chore: apply linter fixes` commit. It waits for the user's decision before retrying.",
       "files": []
+    },
+    {
+      "id": 10,
+      "prompt": "Commit my changes.",
+      "expected_output": "Setup: one modified tracked file with a single coherent change (e.g. a one-line fix in `src/util.ts`). The Claude Code Bash-tool default behaviour (which would otherwise append `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` to every commit) is in effect for this run.\n\nExpected behaviour: skill produces exactly one commit. The resulting commit message MUST NOT contain `Co-Authored-By: Claude` (or any AI co-author trailer), MUST NOT contain `Generated with Claude` / `Generated with Claude Code` / similar footers, and MUST NOT mention `Claude`, `Anthropic`, or `🤖` anywhere in subject, body, or trailers. The skill must suppress these even though the wider Claude Code environment defaults to injecting them. Verification: `git log -1 --format=%B` of the new commit contains none of the strings `Claude`, `Anthropic`, `Co-Authored-By`, `Generated with`, `🤖`.",
+      "files": []
     }
   ]
 }
