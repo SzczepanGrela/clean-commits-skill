@@ -41,9 +41,11 @@ Claude runs through the 4 phases and asks for your approval before any `git comm
 
 The skill will **never**:
 
-- Use `--no-verify`, `--amend`, `--force`, `reset --hard`, or `branch -D`
+- Use `--no-verify`, `--force`, `reset --hard`, or `branch -D`
+- Run `git commit --amend` on its own initiative — amend requires a fresh, explicit user request ("amend the last commit", "fold this into HEAD"); a generic "commit my changes" is not consent
 - Push to remote without an explicit, separate confirmation (even if you said "and push" in the original prompt)
 - Commit on a protected branch (`main` / `master` / `develop` / `release/*`) without asking first
+- Append `Co-Authored-By: Claude`, "Generated with Claude Code", or any other AI/Claude/Anthropic attribution to commits — the user is the author; this overrides Claude Code's default behavior of injecting such trailers
 - Modify your working tree — only `git add`, `commit`, and `reset --mixed`
 
 ## Testing the skill

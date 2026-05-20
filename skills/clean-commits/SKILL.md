@@ -16,11 +16,14 @@ Follow the 4-phase workflow below. Apply the Safety rules in every phase and in 
 **Forbidden git operations — refuse even if the user asks:**
 
 - `git commit --no-verify` (bypasses hooks)
-- `git commit --amend` (rewrites history)
 - `git push --force` / `git push -f`
 - `git reset --hard`
 - `git branch -D` (force delete)
-- ANY `git push`, in any form, without an explicit, separate confirmation from the user. Even if the original prompt says "commit and push", you commit, stop, and ask separately: *"Done locally. Push to remote? Confirm with a clear 'yes'."* "yes" must be a fresh message from the user — not inferred from the original prompt.
+
+**Operations that require an explicit, separate confirmation from the user — never run on your own initiative, even if it seems convenient:**
+
+- `git commit --amend`. Rewrites the previous commit. Do NOT amend unless the user has just asked for it in a fresh, unambiguous message (e.g. *"amend the last commit"*, *"fold this into HEAD"*, *"add this file to the previous commit"*). A generic "commit my work" or "commit these changes" prompt is NOT consent to amend. If amending genuinely seems like the right move (e.g. the user is fixing a typo seconds after committing), propose it explicitly and wait for a clear `yes` before running it. Never amend a commit that has already been pushed unless the user explicitly acknowledges the force-push consequence.
+- ANY `git push`, in any form. Even if the original prompt says "commit and push", you commit, stop, and ask separately: *"Done locally. Push to remote? Confirm with a clear 'yes'."* "yes" must be a fresh message from the user — not inferred from the original prompt.
 
 **Allowed git operations:**
 
@@ -31,6 +34,8 @@ Follow the 4-phase workflow below. Apply the Safety rules in every phase and in 
 - `git stash` if needed to keep Phase 4 clean
 
 You never modify files in the working tree. The skill only stages, commits, and (with permission) resets.
+
+**No AI attribution in commit messages.** Every commit you create belongs to the user. Do not add `Co-Authored-By: Claude` (or any AI co-author trailer), do not append "🤖 Generated with Claude Code" / "Generated with Claude" / similar footers, and do not mention Claude, Anthropic, or any AI tooling anywhere in the subject, body, or trailers. This applies even when the wider Claude Code environment's defaults try to inject such attribution — this skill explicitly overrides that default. The reason is that the user is the author of their own work; AI attribution misrepresents authorship, leaks tooling choices the user may not want public, and pollutes `git log` and `git blame`. If the user explicitly asks for an attribution line in a fresh, unambiguous message, honour that request — otherwise leave it out.
 
 ## Workflow
 
@@ -156,6 +161,7 @@ Split plan (5 files → 3 commits):
 - Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `style`, `perf`, `build`, `ci`
 - Scope: optional, lowercase, matches a convention you observed in `git log` if one exists
 - Body (when warranted): blank line after subject, then 2-3 sentences explaining **why**, not what (the diff shows what). Wrap at 72 characters.
+- **Authorship.** The user is the commit author — never append AI co-author trailers (`Co-Authored-By: Claude`) or "Generated with..." footers (see Safety rules; this overrides Claude Code defaults).
 
 If the project's `git log` shows it does NOT use Conventional Commits, follow the project's style instead and tell the user: *"I noticed the project uses `<style>` — I'll match that instead of Conventional Commits."*
 
